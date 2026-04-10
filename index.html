@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flash Store</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0a0a0a;
+    color: white;
+}
+
+/* Splash Screen */
+#splash {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    color: cyan;
+    text-shadow: 0 0 20px cyan;
+}
+
+/* Login */
+#loginPage {
+    display: none;
+    text-align: center;
+    padding: 50px;
+}
+
+input {
+    padding: 10px;
+    margin: 10px;
+    width: 80%;
+}
+
+button {
+    padding: 10px 20px;
+    background: cyan;
+    border: none;
+    color: black;
+    cursor: pointer;
+}
+
+/* Main App */
+#app {
+    display: none;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background: #111;
+    box-shadow: 0 0 10px cyan;
+}
+
+header h1 {
+    color: cyan;
+}
+
+#profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin: 10px;
+}
+
+.tabs button {
+    background: #111;
+    color: cyan;
+    border: 1px solid cyan;
+}
+
+/* App Cards */
+.apps {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px;
+}
+
+.card {
+    background: #111;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px cyan;
+}
+
+.card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.card h3 {
+    margin: 5px 0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Splash -->
+<div id="splash">⚡ Flash Store</div>
+
+<!-- Login -->
+<div id="loginPage">
+    <h2>Login</h2>
+    <input type="text" id="name" placeholder="Enter Name"><br>
+    <input type="file" id="pic"><br>
+    <button onclick="login()">Enter Store</button>
+</div>
+
+<!-- App -->
+<div id="app">
+    <header>
+        <h1>Flash Store</h1>
+        <img id="profile">
+    </header>
+
+    <div class="tabs">
+        <button onclick="filterApps('all')">All</button>
+        <button onclick="filterApps('cricket')">Cricket</button>
+        <button onclick="filterApps('other')">Other</button>
+    </div>
+
+    <div class="apps" id="apps"></div>
+</div>
+
+<script>
+
+// Splash
+setTimeout(()=>{
+    document.getElementById("splash").style.display="none";
+    document.getElementById("loginPage").style.display="block";
+},2000);
+
+// Login
+function login(){
+    let name = document.getElementById("name").value;
+    let pic = document.getElementById("pic").files[0];
+
+    if(name && pic){
+        let reader = new FileReader();
+        reader.onload = function(e){
+            document.getElementById("profile").src = e.target.result;
+        }
+        reader.readAsDataURL(pic);
+
+        document.getElementById("loginPage").style.display="none";
+        document.getElementById("app").style.display="block";
+    }
+}
+
+// Apps Data
+let appsData = [
+    {
+        name: "Real Cricket 24",
+        category: "cricket",
+        dev: "Nautilus Mobile",
+        img: "https://play-lh.googleusercontent.com/realcricket"
+    },
+    {
+        name: "WCC3",
+        category: "cricket",
+        dev: "Nextwave",
+        img: "https://play-lh.googleusercontent.com/wcc3"
+    },
+    {
+        name: "Stick Cricket",
+        category: "cricket",
+        dev: "Stick Sports",
+        img: "https://play-lh.googleusercontent.com/stick"
+    },
+    {
+        name: "Subway Surfers",
+        category: "other",
+        dev: "SYBO",
+        img: "https://play-lh.googleusercontent.com/subway"
+    },
+    {
+        name: "Free Fire",
+        category: "other",
+        dev: "Garena",
+        img: "https://play-lh.googleusercontent.com/freefire"
+    }
+];
+
+// Show Apps
+function displayApps(list){
+    let container = document.getElementById("apps");
+    container.innerHTML = "";
+
+    list.forEach(app=>{
+        container.innerHTML += `
+        <div class="card">
+            <img src="${app.img}">
+            <h3>${app.name}</h3>
+            <p>${app.dev}</p>
+        </div>
+        `;
+    });
+}
+
+// Filter
+function filterApps(type){
+    if(type === "all"){
+        displayApps(appsData);
+    } else {
+        displayApps(appsData.filter(app=>app.category===type));
+    }
+}
+
+// Default load
+displayApps(appsData);
+
+</script>
+
+</body>
+</html>
