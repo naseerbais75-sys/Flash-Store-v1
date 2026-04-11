@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flash Store Pro | Bais Gaming</title>
+
+<style>
+:root { --neon: #00f2ff; --bg: #050505; --card: #121212; --nav: #111; }
+body { margin:0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; padding-bottom: 70px; overflow-x: hidden; }
+
+/* --- ROUND LOADING SPLASH SCREEN --- */
+#splash {
+    position: fixed; inset: 0; background: black;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 3000;
+}
+.bolt-logo { font-size: 50px; color: var(--neon); margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--neon)); font-weight: 900; }
+
+.loader-ring {
+    width: 45px; height: 45px;
+    border: 3px solid #222;
+    border-top: 3px solid var(--neon);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* --- TOP BAR --- */
+.top-bar { display: flex; align-items: center; padding: 15px; background: #000; border-bottom: 1px solid #222; }
+.bubble-container { display: flex; gap: 12px; margin-left: auto; }
+.bubble { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 16px; font-weight: bold; color: white; transition: 0.3s; }
+.bubble:active { transform: scale(0.9); }
+.bubble-yt { background: #ff0000; box-shadow: 0 0 10px rgba(255,0,0,0.4); }
+.bubble-wa { background: #25d366; box-shadow: 0 0 10px rgba(37,211,102,0.4); }
+
+/* --- BOTTOM NAV --- */
+.bottom-nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: var(--nav); display: flex; border-top: 1px solid #222; z-index: 1000; }
+.nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #555; font-size: 12px; cursor: pointer; transition: 0.3s; }
+.nav-item.active { color: var(--neon); }
+.nav-icon { font-size: 20px; margin-bottom: 2px; }
+
+/* --- PAGES --- */
+.page { display: none; padding: 15px; animation: fadeIn 0.3s; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.section-title { font-size: 18px; font-weight: bold; margin: 15px 0; color: var(--neon); border-left: 3px solid var(--neon); padding-left: 10px; }
+.apps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+/* --- APP CARDS --- */
+.card { background: var(--card); border-radius: 20px; padding: 20px 10px; text-align: center; border: 1px solid #222; transition: 0.3s; }
+.card:active { transform: scale(0.95); border-color: var(--neon); }
+.app-icon { width: 70px; height: 70px; margin: 0 auto 10px; border-radius: 18px; display: flex; justify-content: center; align-items: center; overflow: hidden; font-weight: 900; font-size: 9px; color: black; padding: 5px; }
+
+.bg-blue { background: linear-gradient(135deg, var(--neon), #0066ff); }
+.bg-purple { background: linear-gradient(135deg, #bc13fe, #7a00cc); }
+.bg-red { background: linear-gradient(135deg, #ff3131, #900); color: white !important; }
+
+/* ANIMATIONS */
+.type-anim { white-space: nowrap; width: 0; overflow: hidden; animation: typing 3s steps(15) infinite; }
+@keyframes typing { 0%,10% {width:0} 50%,80% {width:100%} 90%,100% {width:0} }
+
+.pulse-anim { animation: pulse-text 2s infinite ease-in-out; text-align: center; }
+@keyframes pulse-text { 0%, 100% { opacity: 0.5; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1); } }
+
+/* --- DETAIL & LOADING --- */
+#detail-page { display: none; position: fixed; inset: 0; background: #000; z-index: 2000; padding: 20px; text-align: center; }
+.loading-box { display: none; margin-top: 30px; width: 100%; }
+.progress-bg { height: 10px; background: #222; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+.progress-fill { height: 100%; width: 0%; background: var(--neon); box-shadow: 0 0 10px var(--neon); }
+.ins-btn { width: 100%; padding: 15px; border-radius: 10px; border: none; background: var(--neon); font-weight: bold; font-size: 16px; margin-top: 20px; cursor: pointer; color: black; }
+</style>
+</head>
+<body>
+
+<div id="splash">
+    <div class="bolt-logo">⚡ FLASH STORE</div>
+    <div class="loader-ring"></div>
+    <p style="color:#555; margin-top:15px; font-size:12px;">Bais Gaming Live</p>
+</div>
+
+<div id="main-ui" style="display:none;">
+    <div class="top-bar">
+        <div style="font-weight:900; font-size:18px; color: var(--neon);">FLASH STORE</div>
+        <div class="bubble-container">
+            <a href="https://youtube.com/@baisgaminglive" class="bubble bubble-yt">YT</a>
+            <a href="https://whatsapp.com/channel/0029VaD7Xvj7YSd1Q" class="bubble bubble-wa">WA</a>
+        </div>
+    </div>
+
+    <div id="games-page" class="page active">
+        <div class="section-title">Cricket Games & Mods</div>
+        <div class="apps-grid" id="games-grid"></div>
+    </div>
+
+    <div id="apps-page" class="page">
+        <div class="section-title">Applications</div>
+        <div class="apps-grid" id="apps-grid"></div>
+    </div>
+
+    <div id="search-page" class="page">
+        <input type="text" placeholder="Search games or apps..." onkeyup="searchApp(this.value)" style="width:100%; padding:14px; border-radius:25px; background:#111; border:1px solid #333; color:white; outline:none; box-sizing: border-box;">
+        <div class="apps-grid" id="search-results" style="margin-top:20px;"></div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="nav('games-page', this)"><span class="nav-icon">🕹️</span>Games</div>
+        <div class="nav-item" onclick="nav('apps-page', this)"><span class="nav-icon">📱</span>Apps</div>
+        <div class="nav-item" onclick="nav('search-page', this)"><span class="nav-icon">🔍</span>Search</div>
+    </div>
+</div>
+
+<div id="detail-page">
+    <button onclick="closeDetail()" style="background:none; border:none; color:var(--neon); font-size:18px; float:left; cursor: pointer;">← Back</button>
+    <div style="clear:both; padding-top:50px;">
+        <div id="det-icon" class="app-icon" style="width:100px; height:100px; font-size:10px;"></div>
+        <h2 id="det-title" style="color:var(--neon); margin-bottom:5px;"></h2>
+        <p id="det-dev" style="color:#777; font-size:13px;"></p>
+        
+        <div id="loading-box" class="loading-box">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--neon);"><span>Installing...</span><span id="p-text">0%</span></div>
+            <div class="progress-bg"><div id="bar" class="progress-fill"></div></div>
+        </div>
+        
+        <button id="ins-btn" class="ins-btn" onclick="runInstall()">INSTALL</button>
+    </div>
+</div>
+
+<script>
+const gamesData = [
+    { name: "Flash Cricket 26", dev: "Bais Naseer", color: "bg-blue", text: "FLASH CRICKET 26", link: "https://www.mediafire.com/file/marzkzw1iyxcub4/Flash+Cricket+™+26_1.apk/file", anim: "type-anim" },
+    { name: "Game Changer 5", dev: "Muhammad Wali", color: "bg-blue", text: "GAME CHANGER 5", link: "https://www.mediafire.com/file/npuhdydkoc3eokq/GC5_4.2.apk/file", anim: "type-anim" },
+    { name: "Real Cricket", dev: "Nautilus", color: "bg-purple", text: "REAL CRICKET", link: "https://play.google.com/store/apps/details?id=com.nautilus.realcricket", anim: "type-anim" }
+];
+
+const appsData = [
+    { name: "Cricket PLP Files", dev: "Baltistani Gamer", color: "bg-red", text: "CRICKET PLP FILES", link: "https://play.google.com/store/apps/details?id=com.uswatechnologies.cricketplpstore", anim: "pulse-anim" }
+];
+
+let selectedApp = null;
+
+// Auto-start without login
+window.onload = () => {
+    setTimeout(() => {
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('main-ui').style.display = 'block';
+        initStore();
+    }, 2500);
+};
+
+function initStore() {
+    const gGrid = document.getElementById('games-grid');
+    const aGrid = document.getElementById('apps-grid');
+    gGrid.innerHTML = ""; aGrid.innerHTML = "";
+    gamesData.forEach(app => gGrid.innerHTML += createCard(app));
+    appsData.forEach(app => aGrid.innerHTML += createCard(app));
+}
+
+function createCard(app) {
+    return `<div class="card" onclick='openDetail(${JSON.stringify(app)})'>
+        <div class="app-icon ${app.color}"><span class="${app.anim}">${app.text}</span></div>
+        <div style="font-size:12px; font-weight:bold;">${app.name}</div>
+        <div style="font-size:9px; color:#555;">${app.dev}</div>
+    </div>`;
+}
+
+function nav(id, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+}
+
+function openDetail(app) {
+    selectedApp = app;
+    document.getElementById('detail-page').style.display = 'block';
+    document.getElementById('det-title').innerText = app.name;
+    document.getElementById('det-dev').innerText = "Developer: " + app.dev;
+    const icon = document.getElementById('det-icon');
+    icon.className = `app-icon ${app.color}`;
+    icon.innerHTML = `<span class="${app.anim}">${app.text}</span>`;
+    document.getElementById('loading-box').style.display = 'none';
+    document.getElementById('ins-btn').style.display = 'block';
+}
+
+function closeDetail() { document.getElementById('detail-page').style.display = 'none'; }
+
+function runInstall() {
+    const btn = document.getElementById('ins-btn');
+    const box = document.getElementById('loading-box');
+    const bar = document.getElementById('bar');
+    const txt = document.getElementById('p-text');
+    btn.style.display = 'none'; box.style.display = 'block';
+    let p = 0;
+    let t = setInterval(() => {
+        p++; bar.style.width = p + '%'; txt.innerText = p + '%';
+        if(p >= 100) {
+            clearInterval(t);
+            setTimeout(() => { 
+                window.open(selectedApp.link, '_blank'); 
+                window.location.assign(selectedApp.link);
+            }, 500);
+        }
+    }, 30); // Speed set to be smooth
+}
+
+function searchApp(val) {
+    const res = document.getElementById('search-results'); res.innerHTML = "";
+    const all = [...gamesData, ...appsData];
+    all.filter(g => g.name.toLowerCase().includes(val.toLowerCase())).forEach(g => {
+        res.innerHTML += createCard(g);
+    });
+}
+</script>
+
+</body>
+</html>
