@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flash Store</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #050505;
+    color: white;
+}
+
+/* LOGIN */
+#loginPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-box {
+    background: #0f0f0f;
+    padding: 25px;
+    border-radius: 15px;
+    width: 280px;
+    text-align: center;
+    box-shadow: 0 0 20px #00ffcc;
+}
+
+.login-box h2 {
+    color: #00ffcc;
+}
+
+input {
+    padding: 10px;
+    width: 90%;
+    margin: 8px 0;
+    border-radius: 5px;
+    border: none;
+    background: #111;
+    color: white;
+}
+
+button {
+    padding: 10px;
+    width: 100%;
+    margin-top: 8px;
+    background: #00ffcc;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* IMAGE */
+#preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #00ffcc;
+    margin: 10px auto;
+    object-fit: cover;
+}
+
+/* HEADER */
+header {
+    background: black;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#userPhoto {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid #00ffcc;
+}
+
+/* MENU */
+#menu {
+    position: fixed;
+    left: -220px;
+    top: 0;
+    width: 220px;
+    height: 100%;
+    background: #111;
+    padding: 20px;
+    transition: 0.3s;
+}
+
+#menu a {
+    display: block;
+    margin: 10px 0;
+    color: white;
+    text-decoration: none;
+}
+
+/* NAV */
+.nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+/* SECTIONS */
+.section {
+    display: none;
+    padding: 20px;
+}
+
+.active {
+    display: block;
+}
+
+/* CARD */
+.card {
+    background: #111;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #00ffcc;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage">
+    <div class="login-box">
+        <h2>Flash Store</h2>
+
+        <img id="preview" src="https://via.placeholder.com/80">
+
+        <input type="file" id="photo" onchange="previewImage()">
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+
+        <button onclick="register()">Register</button>
+        <button onclick="login()">Login</button>
+    </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;">
+
+<header>
+    <span onclick="toggleMenu()">☰</span>
+    <h3>Flash Store</h3>
+    <img id="userPhoto">
+</header>
+
+<div id="menu">
+    <h3>Menu</h3>
+    <a href="#" onclick="showSection('about')">About</a>
+    <a href="#" onclick="logout()">Logout</a>
+</div>
+
+<div class="nav">
+    <button onclick="showSection('games')">Games</button>
+    <button onclick="showSection('apps')">Apps</button>
+    <button onclick="showSection('other')">Other Games</button>
+    <button onclick="showSection('search')">Search</button>
+</div>
+
+<!-- GAMES -->
+<div id="games" class="section active">
+    <h2>Games</h2>
+
+    <div class="card">
+        <img src="https://play-lh.googleusercontent.com/3wDk0G1L0Xy1k0XGZ0i3rM0Zx8lYdG5b7Y6ZC7kqz0yJ9g=s180" width="60" style="border-radius:10px;">
+        <h3>Real Cricket</h3>
+        <p>Best realistic cricket game</p>
+        <button onclick="downloadApp()">Install</button>
+    </div>
+
+</div>
+
+<!-- APPS -->
+<div id="apps" class="section">
+    <h2>Apps</h2>
+</div>
+
+<!-- OTHER -->
+<div id="other" class="section">
+    <h2>Other Games</h2>
+</div>
+
+<!-- SEARCH -->
+<div id="search" class="section">
+    <h2>Search</h2>
+    <input type="text" placeholder="Search apps...">
+</div>
+
+<!-- ABOUT -->
+<div id="about" class="section">
+    <h2>About Flash Store</h2>
+    <p>Created by Bais Naseer</p>
+</div>
+
+</div>
+
+<script>
+
+// IMAGE PREVIEW
+let imageData = "";
+
+function previewImage() {
+    let file = document.getElementById("photo").files[0];
+    let reader = new FileReader();
+
+    reader.onload = function() {
+        imageData = reader.result;
+        document.getElementById("preview").src = imageData;
+    }
+
+    reader.readAsDataURL(file);
+}
+
+// REGISTER
+function register() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    localStorage.setItem(email, password);
+    localStorage.setItem(email + "_photo", imageData);
+
+    alert("Account Created!");
+}
+
+// LOGIN
+function login() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    let storedPass = localStorage.getItem(email);
+
+    if(storedPass === password) {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("app").style.display = "block";
+
+        let photo = localStorage.getItem(email + "_photo");
+        document.getElementById("userPhoto").src = photo;
+    } else {
+        alert("Wrong Email or Password");
+    }
+}
+
+// DOWNLOAD
+function downloadApp() {
+    window.open("https://play.google.com/store/apps/details?id=com.nautilus.realcricket");
+}
+
+// MENU
+function toggleMenu() {
+    let menu = document.getElementById("menu");
+    menu.style.left = (menu.style.left === "0px") ? "-220px" : "0px";
+}
+
+// SECTIONS
+function showSection(id) {
+    let sections = document.querySelectorAll(".section");
+    sections.forEach(sec => sec.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+// LOGOUT
+function logout() {
+    location.reload();
+}
+
+</script>
+
+</body>
+</html>
